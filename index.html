@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ripasso pratico di algoritmi e strutture dati, in italiano: idea, codice, complessità e visualizzazioni. Per chi li ha studiati all'università e nel lavoro li ha un po' messi da parte.">
+  <title>Algoritmi in chiaro — un ripasso per chi li ha già studiati</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Salta al contenuto</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="index.html" aria-current="page">
+        <span class="logo-mark" aria-hidden="true">O(n)</span>
+        Algoritmi in chiaro
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <nav class="nav" id="menu">
+        <a href="pagine/complessita.html">Fondamenti</a>
+        <a href="pagine/ricerca-binaria.html">Ricerca</a>
+        <a href="pagine/merge-sort.html">Ordinamento</a>
+        <a href="pagine/bfs.html">Grafi</a>
+        <a href="pagine/mappa.html">Mappa del sito</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenuto">
+    <div class="wrap">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Ripasso pratico · italiano</p>
+          <h1>Quegli algoritmi che un tempo sapevi a memoria.</h1>
+          <p class="lede">Li hai incontrati in un corso di algoritmi e strutture dati. Poi il lavoro è diventato fatto di API, review e scadenze, e i dettagli si sono sbiaditi. Qui li rivedi in modo pratico: l'idea in breve, il costo, un pezzo di codice, e un'animazione da far scorrere al tuo ritmo — con un accenno a dove ti tornano utili sul lavoro.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="pagine/complessita.html">Riparti da Big-O</a>
+            <a class="btn btn-ghost" href="pagine/mappa.html">Vedi la mappa del sito</a>
+          </div>
+        </div>
+        <aside class="hero-viz" aria-label="Animazione decorativa di un ordinamento">
+          <div class="bars" id="hero-bars" role="img" aria-label="Barre che si ordinano da sole"></div>
+          <p>Un Bubble Sort in loop, solo per il ritmo. Nelle schede puoi mettere in pausa e avanzare un passo alla volta.</p>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>Schede già pronte</h2>
+            <p>Stesso schema in tutte: idea, pseudocodice, codice (JavaScript, TypeScript e Python), complessità, visualizzazione ed esercizi. Un ripasso, non un corso da zero.</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <a class="card" href="pagine/complessita.html">
+            <span class="chip chip-teal">Fondamenti</span>
+            <h3>Complessità e notazione asintotica</h3>
+            <p>O, Omega e Theta, senza la polvere dell'esame: a cosa servono quando leggi un pezzo di codice o una pull request.</p>
+            <div class="meta"><span class="chip">O, Ω, Θ</span><span class="chip">casi migliore e peggiore</span></div>
+          </a>
+          <a class="card" href="pagine/ricerca-binaria.html">
+            <span class="chip chip-terra">Ricerca</span>
+            <h3>Ricerca binaria</h3>
+            <p>Dimezzare un intervallo ordinato. È l'idea dietro gli indici, git bisect, e quel «trova la prima build che ha rotto tutto».</p>
+            <div class="meta"><span class="chip mono">O(log n)</span><span class="chip">animazione</span></div>
+          </a>
+          <a class="card" href="pagine/quick-sort.html">
+            <span class="chip chip-gold">Ordinamento</span>
+            <h3>Quick Sort</h3>
+            <p>Partizionare attorno a un pivot: veloce in media, fragile nel caso peggiore. Vale la pena ricordarsi il perché.</p>
+            <div class="meta"><span class="chip mono">O(n log n) medio</span><span class="chip">animazione</span></div>
+          </a>
+        </div>
+        <div class="grid-3" style="margin-top:1rem">
+          <a class="card" href="pagine/merge-sort.html">
+            <span class="chip chip-gold">Ordinamento</span>
+            <h3>Merge Sort</h3>
+            <p>Divide et impera con un tempo prevedibile. È anche il cuore di TimSort, quello che usi in Python senza pensarci.</p>
+            <div class="meta"><span class="chip mono">Θ(n log n)</span><span class="chip">animazione</span></div>
+          </a>
+          <a class="card" href="pagine/bfs.html">
+            <span class="chip chip-teal">Grafi</span>
+            <h3>BFS, visita in ampiezza</h3>
+            <p>La coda e i livelli: il cammino più breve quando ogni arco costa uguale. In iterativa, e anche in una variante ricorsiva.</p>
+            <div class="meta"><span class="chip mono">O(V + E)</span><span class="chip">animazione</span></div>
+          </a>
+          <a class="card" href="pagine/dfs.html">
+            <span class="chip chip-teal">Grafi</span>
+            <h3>DFS, visita in profondità</h3>
+            <p>Scendere fino in fondo e tornare indietro. Ricorsiva, o iterativa con una pila esplicita — la stessa idea del call stack.</p>
+            <div class="meta"><span class="chip mono">O(V + E)</span><span class="chip">animazione</span></div>
+          </a>
+        </div>
+        <p style="margin: 1rem 0 0; color: var(--ink-soft);">C'è anche una scheda sul <a href="pagine/bubble-sort.html">Bubble Sort</a>: non lo scriverai in produzione, ma è il microscopio più semplice per rivedere cosa significa ordinare.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>Come è pensato il sito</h2>
+            <p>Un ripasso per chi lavora, non una dispense da esame. I temi sono quelli del corso che hai già fatto; il tono è quello di una review tra colleghi.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Una scheda, uno schema</h3>
+            <p>Ogni algoritmo ha la stessa ossatura: idea in parole povere, dove ti torna utile sul lavoro, pseudocodice, esempio in JavaScript, TypeScript e Python, tabella di complessità, visualizzazione interattiva, e qualche esercizio con soluzione nascosta.</p>
+          </article>
+          <article class="card">
+            <h3>Dal ripasso alle visite sui grafi</h3>
+            <p>Si parte da Big-O, ricerca e ordinamento — Merge Sort e Quick Sort, fianco a fianco — e si arriva a BFS e DFS, nelle versioni ricorsiva e iterativa. Il resto della mappa è in programma.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>Argomenti in programma</h2>
+            <p>Una vista d'insieme. Con il link, la scheda è già consultabile.</p>
+          </div>
+          <a href="pagine/mappa.html">Apri la mappa completa</a>
+        </div>
+        <div class="topic-grid">
+          <div class="card">
+            <h3>Fondamenti</h3>
+            <p><a href="pagine/complessita.html">Complessità e Big-O</a> · Ricorsione e ricorrenze · Che cos'è un algoritmo</p>
+          </div>
+          <div class="card">
+            <h3>Ricerca</h3>
+            <p>Ricerca lineare · <a href="pagine/ricerca-binaria.html">Ricerca binaria</a></p>
+          </div>
+          <div class="card">
+            <h3>Ordinamento</h3>
+            <p><a href="pagine/bubble-sort.html">Bubble Sort</a> · Insertion · Selection · <a href="pagine/merge-sort.html">Merge Sort</a> · <a href="pagine/quick-sort.html">Quick Sort</a> · Heap Sort</p>
+          </div>
+          <div class="card">
+            <h3>Strutture dati</h3>
+            <p>Array e liste · Pile e code · Alberi e BST · Heap · Tabelle hash</p>
+          </div>
+          <div class="card">
+            <h3>Grafi</h3>
+            <p>Rappresentazione · <a href="pagine/bfs.html">BFS</a> · <a href="pagine/dfs.html">DFS</a> · Dijkstra · Alberi di copertura minimi</p>
+          </div>
+          <div class="card">
+            <h3>Tecniche</h3>
+            <p>Divide et impera · Algoritmi greedy · Programmazione dinamica</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Algoritmi in chiaro — un ripasso pratico, testi originali in italiano. <a href="pagine/fonti.html">Fonti e letture</a></p>
+      <p>Sito statico, senza backend. Pubblicato su GitHub Pages.</p>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+  <script src="js/viz-common.js"></script>
+  <script src="js/home-hero.js"></script>
+</body>
+</html>
