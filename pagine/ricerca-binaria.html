@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ricerca binaria spiegata in italiano: idea, pseudocodice, esempi in JavaScript e Python, complessità O(log n) e una visualizzazione interattiva.">
+  <title>Ricerca binaria — Algoritmi in chiaro</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Salta al contenuto</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html">
+        <span class="logo-mark" aria-hidden="true">O(n)</span>
+        Algoritmi in chiaro
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <nav class="nav" id="menu">
+        <a href="complessita.html">Fondamenti</a>
+        <a href="ricerca-binaria.html" aria-current="page">Ricerca</a>
+        <a href="merge-sort.html">Ordinamento</a>
+        <a href="bfs.html">Grafi</a>
+        <a href="mappa.html">Mappa del sito</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenuto">
+    <div class="prose-wrap">
+      <header class="page-hero">
+        <ol class="crumbs">
+          <li><a href="../index.html">Home</a></li>
+          <li>Ricerca</li>
+          <li>Ricerca binaria</li>
+        </ol>
+        <p class="eyebrow">Ricerca</p>
+        <h1>Ricerca binaria</h1>
+        <p class="lede">Te la ricordi di sicuro come idea; i bordi (<code>&lt;=</code> o <code>&lt;</code>? <code>mid + 1</code> o <code>mid</code>?) forse meno. Se i dati sono già in ordine, non serve guardarli uno per uno. A ogni passo la ricerca binaria scarta metà dell'intervallo rimasto: è l'algoritmo del «libro aperto in mezzo».</p>
+        <div class="chips">
+          <span class="chip chip-teal mono">Tempo Θ(log n)</span>
+          <span class="chip chip-ok">Spazio O(1) iterativa</span>
+          <span class="chip">Richiede un array ordinato</span>
+        </div>
+      </header>
+
+      <article class="prose">
+        <h2>L'idea</h2>
+        <p>Hai un array ordinato in modo non decrescente e un valore da cercare, il <em>target</em>. Tieni due indici, <code>low</code> e <code>high</code>, che delimitano la porzione in cui il valore può ancora trovarsi. Calcoli il punto di mezzo <code>mid</code> e confronti <code>a[mid]</code> con il target:</p>
+        <ul>
+          <li>se sono uguali, hai finito: restituisci <code>mid</code>;</li>
+          <li>se <code>a[mid]</code> è troppo piccolo, il target — se c'è — sta a destra: sposti <code>low</code> a <code>mid + 1</code>;</li>
+          <li>se <code>a[mid]</code> è troppo grande, stai a sinistra: sposti <code>high</code> a <code>mid - 1</code>.</li>
+        </ul>
+        <p>Ripeti finché l'intervallo non diventa vuoto (<code>low &gt; high</code>). In quel caso il valore non c'è. La condizione che rende tutto lecito è una sola: <strong>l'array deve essere ordinato</strong>. Su una sequenza disordinata l'algoritmo può saltare proprio l'elemento che cercavi e dirti, in buona fede, che non esiste.</p>
+
+        <div class="callout">
+          <p class="callout-title">Dove la rivedi sul lavoro</p>
+          <p><code>git bisect</code>, che trova il commit colpevole in log₂(n) prove; gli indici B-tree dei database, che sono ricerca binaria generalizzata su disco; trovare la prima versione o la prima data in cui una metrica supera una soglia; la «ricerca binaria sulla risposta», per esempio la dimensione massima di batch che sta sotto un timeout. In JavaScript non c'è una ricerca binaria nella libreria standard; in Python c'è il modulo <code>bisect</code>.</p>
+        </div>
+
+        <h2>Provalo tu</h2>
+        <p>Scegli un numero, anche uno che non sta nella lista, e osserva come si muovono <code>low</code>, <code>mid</code> e <code>high</code>.</p>
+        <div class="viz" aria-label="Visualizzazione della ricerca binaria">
+          <div class="viz-toolbar">
+            <button class="btn btn-primary" id="btn-play" type="button">Avvia</button>
+            <button class="btn btn-ghost" id="btn-pause" type="button">Pausa</button>
+            <button class="btn btn-ghost" id="btn-step" type="button">Un passo</button>
+            <button class="btn btn-ghost" id="btn-reset" type="button">Azzera</button>
+            <label>Target <input id="target" type="number" value="23"></label>
+            <label>Velocità <input id="speed" type="range" min="10" max="100" value="45"></label>
+          </div>
+          <div class="cells" id="cells"></div>
+          <p class="viz-status" id="viz-status" role="status"></p>
+          <div class="legend">
+            <span><i class="swatch mid"></i> mid</span>
+            <span><i class="swatch sorted"></i> trovato</span>
+            <span><i class="swatch discard"></i> già scartato</span>
+          </div>
+        </div>
+
+        <h2>Pseudocodice</h2>
+        <div class="code-tabs">
+          <div class="tablist" role="tablist">
+            <button type="button" data-lang="pseudo" aria-selected="true">Pseudocodice</button>
+            <button type="button" data-lang="js" aria-selected="false">JavaScript</button>
+            <button type="button" data-lang="ts" aria-selected="false">TypeScript</button>
+            <button type="button" data-lang="py" aria-selected="false">Python</button>
+          </div>
+          <pre data-lang="pseudo"><code>RICERCA-BINARIA(A, target)
+  low ← 0
+  high ← lunghezza(A) − 1
+  mentre low ≤ high
+    mid ← low + ⌊(high − low) / 2⌋
+    se A[mid] = target
+      restituisci mid
+    altrimenti se A[mid] &lt; target
+      low ← mid + 1
+    altrimenti
+      high ← mid − 1
+  restituisci NON-TROVATO</code></pre>
+          <pre data-lang="js" hidden><code><span class="kw">function</span> <span class="fn">ricercaBinaria</span>(a, target) {
+  <span class="kw">let</span> low = <span class="nu">0</span>;
+  <span class="kw">let</span> high = a.length - <span class="nu">1</span>;
+  <span class="kw">while</span> (low &lt;= high) {
+    <span class="kw">const</span> mid = low + Math.floor((high - low) / <span class="nu">2</span>);
+    <span class="kw">if</span> (a[mid] === target) <span class="kw">return</span> mid;
+    <span class="kw">if</span> (a[mid] &lt; target) low = mid + <span class="nu">1</span>;
+    <span class="kw">else</span> high = mid - <span class="nu">1</span>;
+  }
+  <span class="kw">return</span> -<span class="nu">1</span>;
+}</code></pre>
+          <pre data-lang="ts" hidden><code><span class="kw">function</span> <span class="fn">ricercaBinaria</span>&lt;T&gt;(a: readonly T[], target: T): number {
+  <span class="kw">let</span> low = <span class="nu">0</span>;
+  <span class="kw">let</span> high = a.length - <span class="nu">1</span>;
+  <span class="kw">while</span> (low &lt;= high) {
+    <span class="kw">const</span> mid = low + Math.floor((high - low) / <span class="nu">2</span>);
+    <span class="kw">if</span> (a[mid] === target) <span class="kw">return</span> mid;
+    <span class="kw">if</span> (a[mid] &lt; target) low = mid + <span class="nu">1</span>;
+    <span class="kw">else</span> high = mid - <span class="nu">1</span>;
+  }
+  <span class="kw">return</span> -<span class="nu">1</span>;
+}</code></pre>
+          <pre data-lang="py" hidden><code><span class="kw">def</span> <span class="fn">ricerca_binaria</span>(a, target):
+    low, high = <span class="nu">0</span>, len(a) - <span class="nu">1</span>
+    <span class="kw">while</span> low &lt;= high:
+        mid = low + (high - low) // <span class="nu">2</span>
+        <span class="kw">if</span> a[mid] == target:
+            <span class="kw">return</span> mid
+        <span class="kw">if</span> a[mid] &lt; target:
+            low = mid + <span class="nu">1</span>
+        <span class="kw">else</span>:
+            high = mid - <span class="nu">1</span>
+    <span class="kw">return</span> -<span class="nu">1</span></code></pre>
+        </div>
+
+        <div class="callout">
+          <p class="callout-title">Perché mid si calcola così</p>
+          <p>La formula <code>mid = low + ⌊(high − low) / 2⌋</code> è equivalente a <code>⌊(low + high) / 2⌋</code> quando gli indici non sono troppo grandi. In linguaggi con interi a bit fissi, però, <code>low + high</code> può andare in overflow. Partire da <code>low</code> e aggiungere metà della distanza è la variante prudente, e conviene prenderla come abitudine.</p>
+        </div>
+
+        <h2>Complessità</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th></th><th>Tempo</th><th>Spazio extra</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Caso migliore</td><td class="mono">Θ(1)</td><td class="mono">O(1)</td></tr>
+              <tr><td>Caso medio e peggiore</td><td class="mono">Θ(log n)</td><td class="mono">O(1) iterativa, O(log n) ricorsiva</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A ogni iterazione l'intervallo si dimezza (o quasi). Partendo da n elementi, dopo k passi ne restano circa n / 2<sup>k</sup>. Si arriva a 1 quando k è dell'ordine di log<sub>2</sub> n. Per questo, su un milione di elementi, bastano una ventina di confronti. Una ricerca lineare, nello stesso caso peggiore, ne farebbe un milione.</p>
+        <p>La versione iterativa usa solo poche variabili: lo spazio extra è costante. Quella ricorsiva aggiunge un frame di chiamata per ogni dimezzamento, quindi O(log n) sulla pila. Per un array è quasi sempre meglio l'iterativa, più semplice da ragionare anche sui bordi.</p>
+
+        <div class="callout note">
+          <p class="callout-title">Attenzione ai duplicati</p>
+          <p>Se il valore compare più volte, questa versione restituisce <em>un</em> indice qualsiasi tra quelli validi, non necessariamente il primo. Per ottenere l'occorrenza più a sinistra si continua a cercare nella metà sinistra anche dopo un match, tenendo da parte l'ultimo indice buono trovato. È una variante molto chiesta in sede d'esame e nei colloqui.</p>
+        </div>
+
+        <h2>Esercizi</h2>
+        <div class="exercise">
+          <h3>1. Quanti confronti, al massimo?</h3>
+          <p>Su un array di 16 elementi già ordinati, qual è il numero massimo di confronti tra elementi che fa la ricerca binaria nel caso peggiore? (Conta un confronto per ogni ispezione di <code>a[mid]</code>.)</p>
+          <details>
+            <summary>Mostra la soluzione</summary>
+            <p>Al più 5. L'intervallo parte da 16, poi 8, 4, 2, 1. In generale è 1 + ⌊log<sub>2</sub> n⌋, qui 1 + 4 = 5. Se il valore è assente, l'algoritmo esaurisce comunque questi passi (o uno in meno, a seconda di come cadono i punti medi: l'ordine resta logaritmico).</p>
+          </details>
+        </div>
+        <div class="exercise">
+          <h3>2. Dove va storto?</h3>
+          <p>Cosa succede se applichi la ricerca binaria all'array <code>[9, 1, 4, 7]</code> cercando il valore 1?</p>
+          <details>
+            <summary>Mostra la soluzione</summary>
+            <p>L'array non è ordinato, quindi l'invariante cade. Il primo <code>mid</code> punta a 1 (indice 1) e in questo esempio particolare lo troveresti per caso. Cercando 7, invece, il primo mezzo è 1, troppo piccolo, e l'algoritmo andrebbe a destra su <code>[4, 7]</code> — qui funzionerebbe ancora. Cercando 9, il primo mezzo è 1, si va a destra e 9 viene scartato: il risultato è un falso «non trovato». Morale: senza ordinamento non c'è garanzia.</p>
+          </details>
+        </div>
+        <div class="exercise">
+          <h3>3. Condizione del ciclo</h3>
+          <p>Perché il ciclo deve essere <code>while (low &lt;= high)</code> e non <code>while (low &lt; high)</code>?</p>
+          <details>
+            <summary>Mostra la soluzione</summary>
+            <p>Quando resta un solo candidato, <code>low</code> e <code>high</code> coincidono. Con <code>&lt;</code> quel candidato non verrebbe mai ispezionato e un elemento presente in quella cella potrebbe essere dichiarato assente. L'uguaglianza è il passo che controlla l'ultimo valore rimasto.</p>
+          </details>
+        </div>
+
+        <nav class="pager">
+          <a href="complessita.html"><span class="dir">Indietro</span>Complessità</a>
+          <a href="bubble-sort.html"><span class="dir">Avanti</span>Bubble Sort</a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Algoritmi in chiaro — un ripasso pratico, testi originali in italiano. <a href="fonti.html">Fonti e letture</a></p>
+      <p>Sito statico, senza backend. Pubblicato su GitHub Pages.</p>
+    </div>
+  </footer>
+  <script src="../js/main.js"></script>
+  <script src="../js/viz-common.js"></script>
+  <script src="../js/binary-search.js"></script>
+</body>
+</html>
