@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Introduzione alla complessità asintotica: O-grande, Omega e Theta, con esempi concreti e una tabella delle classi più comuni.">
+  <title>Complessità e notazione asintotica — Algoritmi in chiaro</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Salta al contenuto</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html">
+        <span class="logo-mark" aria-hidden="true">O(n)</span>
+        Algoritmi in chiaro
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <nav class="nav" id="menu">
+        <a href="complessita.html" aria-current="page">Fondamenti</a>
+        <a href="ricerca-binaria.html">Ricerca</a>
+        <a href="merge-sort.html">Ordinamento</a>
+        <a href="bfs.html">Grafi</a>
+        <a href="mappa.html">Mappa del sito</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenuto">
+    <div class="prose-wrap">
+      <header class="page-hero">
+        <ol class="crumbs">
+          <li><a href="../index.html">Home</a></li>
+          <li>Fondamenti</li>
+          <li>Complessità</li>
+        </ol>
+        <p class="eyebrow">Fondamenti</p>
+        <h1>Complessità e notazione asintotica</h1>
+        <p class="lede">All'esame era una domanda teorica. Sul lavoro è la differenza tra un endpoint che regge e uno che crolla quando la tabella passa da mille a un milione di righe. Ripassiamo il linguaggio per dirlo in fretta: O, Omega e Theta.</p>
+        <div class="chips">
+          <span class="chip chip-teal">O, Ω, Θ</span>
+          <span class="chip">tempo e spazio</span>
+          <span class="chip">caso migliore, medio, peggiore</span>
+        </div>
+      </header>
+
+      <article class="prose">
+        <h2>L'idea</h2>
+        <p>Immagina due modi per trovare un nome in una rubrica con <em>n</em> voci. Il primo scorre la lista dall'inizio: nel caso peggiore legge tutte le <em>n</em> voci. Il secondo, se la rubrica è in ordine alfabetico, può saltare a metà e scartare un pezzo intero a ogni confronto. Il primo cresce in modo lineare, il secondo in modo logaritmico. Su dieci elementi quasi non li distingui; su dieci milioni la differenza è enorme.</p>
+        <p>La <strong>complessità temporale</strong> misura (in modo astratto) quanti passi fondamentali fa un algoritmo in funzione della dimensione dell'input, di solito chiamata <code>n</code>. La <strong>complessità spaziale</strong> misura la memoria aggiuntiva che gli serve. Non contiamo i millisecondi su un computer particolare: quei numeri dipendono dal processore, dal linguaggio, dal carico del sistema. Contiamo invece come cresce il lavoro quando <code>n</code> diventa grande.</p>
+
+        <div class="callout">
+          <p class="callout-title">Dove lo rivedi sul lavoro</p>
+          <p>Un <code>.find()</code> o un <code>.includes()</code> dentro un ciclo che diventa O(n²) senza che nessuno se ne accorga; la query N+1 dell'ORM; la scelta tra un array e un <code>Set</code>/<code>Map</code> per i lookup (O(n) contro O(1) in media); una paginazione che rilegge tutto a ogni pagina. Riconoscere la classe di crescita a colpo d'occhio è la competenza più utile di tutta questa materia.</p>
+        </div>
+
+        <h2>O, Omega e Theta</h2>
+        <p>Tre simboli tornano in ogni libro e in ogni esame. Vale la pena tenerli distinti.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Simbolo</th><th>Nome</th><th>Cosa significa, in pratica</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">O(f(n))</td>
+                <td>O-grande (Big-O)</td>
+                <td>È un <strong>limite superiore</strong>. Il lavoro, da un certo <code>n</code> in poi, non cresce più in fretta di una costante per <code>f(n)</code>. Dire «è O(n²)» vuol dire «non è peggio di quadratico» — potrebbe anche essere meglio.</td>
+              </tr>
+              <tr>
+                <td class="mono">Ω(f(n))</td>
+                <td>Omega-grande</td>
+                <td>È un <strong>limite inferiore</strong>. Il lavoro è almeno dell'ordine di <code>f(n)</code>. Utile quando vuoi dire che un problema, o un algoritmo, non può fare meno di una certa quantità di fatica.</td>
+              </tr>
+              <tr>
+                <td class="mono">Θ(f(n))</td>
+                <td>Theta-grande</td>
+                <td>È un bound <strong>stretto</strong>: vale sia O sia Ω. Se un ciclo fa sempre circa <code>n / 2</code> confronti, è Θ(n). Quando possiamo, è la notazione più informativa.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <p class="callout-title">Nella pratica quotidiana</p>
+          <p>Molti articoli e discussioni usano «O-grande» anche quando intendono Theta: «binary search è O(log n)» è vero, e in realtà è anche Θ(log n) nel caso peggiore. Qui cerchiamo di essere precisi, ma non ti fare prendere dal panico se in rete i due simboli si mescolano.</p>
+        </div>
+
+        <h2>Come si «pulisce» una formula</h2>
+        <p>Se un algoritmo fa <code>3n² + 10n + 40</code> confronti, per <code>n</code> grande il termine <code>3n²</code> domina. La notazione asintotica butta via le costanti e i termini di grado inferiore, e scrive Θ(n²). Non è pigra: sta isolando il comportamento che conta quando l'input cresce.</p>
+        <p>Regole utili, da prendere con un po' di giudizio:</p>
+        <ul>
+          <li>si ignorano le costanti moltiplicative: <code>100n</code> e <code>2n</code> sono entrambi Θ(n);</li>
+          <li>si tiene il termine che cresce più in fretta: <code>n² + n log n + 7</code> è Θ(n²);</li>
+          <li>i logaritmi in basi diverse differiscono solo per una costante, quindi O(log<sub>2</sub> n) e O(log<sub>10</sub> n) sono la stessa classe;</li>
+          <li>quando sommi due pezzi indipendenti, vince il più costoso: leggere un array Θ(n) e poi una ricerca binaria Θ(log n) resta Θ(n).</li>
+        </ul>
+
+        <h2>Le classi che incontri più spesso</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Classe</th>
+                <th>Nome informale</th>
+                <th>Esempio tipico</th>
+                <th>Con n = 1.000</th>
+                <th>Con n = 1.000.000</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">O(1)</td><td>costante</td><td>accedere a un array per indice</td><td class="mono">1</td><td class="mono">1</td></tr>
+              <tr><td class="mono">O(log n)</td><td>logaritmica</td><td>ricerca binaria</td><td class="mono">≈ 10</td><td class="mono">≈ 20</td></tr>
+              <tr><td class="mono">O(n)</td><td>lineare</td><td>scorrere una lista</td><td class="mono">1.000</td><td class="mono">1.000.000</td></tr>
+              <tr><td class="mono">O(n log n)</td><td>linearitmica</td><td>Merge Sort, Heap Sort</td><td class="mono">≈ 10.000</td><td class="mono">≈ 20.000.000</td></tr>
+              <tr><td class="mono">O(n²)</td><td>quadratica</td><td>Bubble Sort, doppio ciclo</td><td class="mono">1.000.000</td><td class="mono">10¹²</td></tr>
+              <tr><td class="mono">O(2<sup>n</sup>)</td><td>esponenziale</td><td>sottoinsiemi per forza bruta</td><td class="mono">enorme</td><td class="mono">impraticabile</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>I numeri delle due colonne di destra sono ordini di grandezza, non tempi reali: servono a sentire la pendenza. Un algoritmo esponenziale può essere perfetto su <code>n = 20</code> e inutilizzabile su <code>n = 60</code>.</p>
+
+        <figure class="growth-chart">
+          <figcaption>Andamento qualitativo di alcune classi, con n piccolo sull'asse orizzontale. Le curve non sono in scala reale: n² esploderebbe fuori dal grafico se usassimo gli stessi assi di 2<sup>n</sup>.</figcaption>
+          <svg viewBox="0 0 640 280" role="img" aria-labelledby="chart-title chart-desc" width="100%">
+            <title id="chart-title">Confronto visivo delle classi di crescita</title>
+            <desc id="chart-desc">Cinque curve: costante, logaritmica, lineare, n log n e quadratica, disegnate da n piccolo a n più grande.</desc>
+            <rect x="0" y="0" width="640" height="280" fill="#fffdf8"/>
+            <line x1="52" y1="230" x2="610" y2="230" stroke="#d7cfc0"/>
+            <line x1="52" y1="30" x2="52" y2="230" stroke="#d7cfc0"/>
+            <text x="320" y="262" text-anchor="middle" fill="#6b655b" font-size="13" font-family="Source Sans 3, sans-serif">dimensione dell'input, n →</text>
+            <text x="18" y="130" fill="#6b655b" font-size="13" font-family="Source Sans 3, sans-serif" transform="rotate(-90 18 130)">lavoro</text>
+            <path d="M52 200 L610 200" fill="none" stroke="#0d4f4a" stroke-width="2.4"/>
+            <path d="M52 210 C 140 198, 260 190, 610 176" fill="none" stroke="#14756d" stroke-width="2.4"/>
+            <path d="M52 220 L610 92" fill="none" stroke="#1e3a5f" stroke-width="2.4"/>
+            <path d="M52 222 C 200 200, 360 140, 610 58" fill="none" stroke="#c9a227" stroke-width="2.4"/>
+            <path d="M52 226 Q 280 220, 420 150 T 610 18" fill="none" stroke="#c45c26" stroke-width="2.4"/>
+            <g font-size="12" font-family="IBM Plex Mono, monospace">
+              <text x="520" y="192" fill="#0d4f4a">O(1)</text>
+              <text x="520" y="168" fill="#14756d">O(log n)</text>
+              <text x="520" y="86" fill="#1e3a5f">O(n)</text>
+              <text x="430" y="52" fill="#8a7010">O(n log n)</text>
+              <text x="545" y="22" fill="#c45c26">O(n²)</text>
+            </g>
+          </svg>
+        </figure>
+
+        <h2>Caso migliore, medio, peggiore</h2>
+        <p>Lo stesso algoritmo può avere costi diversi a seconda dei dati. La ricerca lineare, se l'elemento è il primo, fa un solo confronto (caso migliore, Θ(1)); se manca del tutto, ne fa n (caso peggiore, Θ(n)). La ricerca binaria, su un array già ordinato, è Θ(log n) nel caso peggiore e può terminare prima se trova il valore a metà strada.</p>
+        <p>Quando non è detto altro, si parla di solito del <strong>caso peggiore</strong>: è una garanzia. Il caso medio richiede un'ipotesi su come sono fatti gli input (per esempio «tutte le permutazioni sono equiprobabili») ed è più delicato da calcolare. Quick Sort è l'esempio classico: Θ(n log n) in media, Θ(n²) nel peggiore.</p>
+
+        <div class="callout note">
+          <p class="callout-title">Le costanti, a volte, contano</p>
+          <p>O(n log n) è asintoticamente migliore di O(n²), ma su array minuscoli un Insertion Sort ben scritto può battere un Merge Sort, perché ha meno lavoro «fisso» e usa meglio la cache. La notazione asintotica è una bussola, non un cronometro. Quando n è piccolo o i fattori nascosti sono grandi, si misura.</p>
+        </div>
+
+        <h2>Un esempio guidato</h2>
+        <p>Quante operazioni fa questo frammento?</p>
+        <div class="code-tabs">
+          <div class="tablist" role="tablist" aria-label="Linguaggio del codice">
+            <button type="button" role="tab" data-lang="js" aria-selected="true">JavaScript</button>
+            <button type="button" role="tab" data-lang="py" aria-selected="false">Python</button>
+          </div>
+          <pre data-lang="js"><code><span class="kw">function</span> <span class="fn">contaCoppie</span>(a) {
+  <span class="kw">let</span> tot = <span class="nu">0</span>;                 <span class="cm">// Θ(1)</span>
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nu">0</span>; i &lt; a.length; i++) {     <span class="cm">// n iterazioni</span>
+    <span class="kw">for</span> (<span class="kw">let</span> j = i + <span class="nu">1</span>; j &lt; a.length; j++) { <span class="cm">// fino a n-1, n-2, …</span>
+      <span class="kw">if</span> (a[i] + a[j] === <span class="nu">0</span>) tot++;
+    }
+  }
+  <span class="kw">return</span> tot;
+}</code></pre>
+          <pre data-lang="py" hidden><code><span class="kw">def</span> <span class="fn">conta_coppie</span>(a):
+    tot = <span class="nu">0</span>                  <span class="cm"># Θ(1)</span>
+    <span class="kw">for</span> i <span class="kw">in</span> range(len(a)):  <span class="cm"># n iterazioni</span>
+        <span class="kw">for</span> j <span class="kw">in</span> range(i + <span class="nu">1</span>, len(a)):
+            <span class="kw">if</span> a[i] + a[j] == <span class="nu">0</span>:
+                tot += <span class="nu">1</span>
+    <span class="kw">return</span> tot</code></pre>
+        </div>
+        <p>Il ciclo interno, al variare di <code>i</code>, fa <code>n-1</code> + <code>n-2</code> + … + 1 confronti, cioè <code>n(n-1)/2</code>. È Θ(n²) nel tempo e Θ(1) nello spazio extra (oltre all'array già in memoria). Non è «circa n² a volte»: lo è sempre, indipendentemente dai valori.</p>
+
+        <h2>Esercizi</h2>
+        <div class="exercise">
+          <h3>1. Quale bound è più stretto?</h3>
+          <p>Un algoritmo fa sempre <code>5n + 3</code> passi. Quali affermazioni sono vere? (a) è O(n) (b) è O(n²) (c) è Θ(n) (d) è Ω(n²).</p>
+          <details>
+            <summary>Mostra la soluzione</summary>
+            <p>Vere: (a), (b) e (c). O(n²) è un limite superiore corretto, anche se largo. (d) è falsa: il lavoro non cresce almeno come n².</p>
+          </details>
+        </div>
+        <div class="exercise">
+          <h3>2. Due cicli in fila</h3>
+          <p>Un algoritmo scorre un array una volta e poi esegue una ricerca binaria sullo stesso array, già ordinato. Qual è la complessità totale nel caso peggiore?</p>
+          <details>
+            <summary>Mostra la soluzione</summary>
+            <p>Θ(n) + Θ(log n) = Θ(n). Il termine lineare nasconde quello logaritmico.</p>
+          </details>
+        </div>
+        <div class="exercise">
+          <h3>3. Una trappola classica</h3>
+          <p>Perché è impreciso dire «O(n) è sempre più veloce di O(n²)»?</p>
+          <details>
+            <summary>Mostra la soluzione</summary>
+            <p>Perché O descrive una crescita asintotica, non un tempo assoluto. Un algoritmo 10000·n può essere più lento di 0,001·n² su n piccoli. Inoltre O(n) è un limite superiore: un algoritmo dichiarato O(n) potrebbe, in realtà, essere anche O(1). Si confrontano con più onestà i bound stretti (Theta) e, quando serve, si misurano i tempi reali.</p>
+          </details>
+        </div>
+
+        <nav class="pager">
+          <a href="../index.html"><span class="dir">Indietro</span>Home</a>
+          <a href="ricerca-binaria.html"><span class="dir">Avanti</span>Ricerca binaria</a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Algoritmi in chiaro — un ripasso pratico, testi originali in italiano. <a href="fonti.html">Fonti e letture</a></p>
+      <p>Sito statico, senza backend. Pubblicato su GitHub Pages.</p>
+    </div>
+  </footer>
+  <script src="../js/main.js"></script>
+</body>
+</html>
