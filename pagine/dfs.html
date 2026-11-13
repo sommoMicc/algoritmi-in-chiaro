@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFS come ripasso: versione ricorsiva e iterativa con pila esplicita, codice JS/TS/Python, usi pratici e animazione su un grafo.">
+  <title>DFS, visita in profondità — Algoritmi in chiaro</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Salta al contenuto</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html"><span class="logo-mark" aria-hidden="true">O(n)</span> Algoritmi in chiaro</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <nav class="nav" id="menu">
+        <a href="complessita.html">Fondamenti</a>
+        <a href="ricerca-binaria.html">Ricerca</a>
+        <a href="merge-sort.html">Ordinamento</a>
+        <a href="bfs.html" aria-current="page">Grafi</a>
+        <a href="mappa.html">Mappa del sito</a>
+      </nav>
+    </div>
+  </header>
+  <main id="contenuto">
+    <div class="prose-wrap">
+      <header class="page-hero">
+        <ol class="crumbs"><li><a href="../index.html">Home</a></li><li>Grafi</li><li>DFS</li></ol>
+        <p class="eyebrow">Grafi</p>
+        <h1>DFS, visita in profondità</h1>
+        <p class="lede">Imbocchi un ramo e lo segui finché puoi, poi torni indietro all'ultimo bivio e provi la strada successiva. È il modo in cui si esce da un labirinto con il gomitolo, e il modo in cui il tuo programma attraversa un albero ricorsivo.</p>
+        <div class="chips">
+          <span class="chip chip-teal mono">Tempo O(V + E)</span>
+          <span class="chip chip-ok mono">Spazio O(V)</span>
+          <span class="chip">Pila LIFO</span>
+          <span class="chip">Ricorsiva o iterativa</span>
+        </div>
+      </header>
+      <article class="prose">
+        <h2>L'idea</h2>
+        <p>Dalla partenza, vai sul primo vicino non ancora visitato, poi sul primo vicino di quello, e così via. Quando un nodo non ha più vicini nuovi, torni indietro (<em>backtracking</em>) e riprendi da dove avevi lasciato. Per ricordarti «dove avevi lasciato» serve una <strong>pila</strong>: nella versione ricorsiva è lo stack delle chiamate, nella versione iterativa la gestisci tu.</p>
+        <p>Se la confronti con la <a href="bfs.html">BFS</a>, la differenza è tutta qui: coda contro pila. La BFS si allarga, la DFS si allunga.</p>
+
+        <div class="callout">
+          <p class="callout-title">Dove la rivedi sul lavoro</p>
+          <p>Risolvere le dipendenze di un package manager o di un build system, e trovare i cicli (la classica «circular dependency»). L'<strong>ordinamento topologico</strong> per decidere in che ordine eseguire migration, job o task. Attraversare un DOM, un AST o un filesystem. Le componenti connesse in un grafo. E tutti i problemi di backtracking: sudoku, permutazioni, ricerche esaustive con potatura.</p>
+        </div>
+
+        <h2>Provalo tu</h2>
+        <p>Confronta le due versioni sullo stesso nodo di partenza: l'ordine di visita è identico, cambia solo chi tiene la pila. Nella ricorsiva vedi la catena delle chiamate aperte, nell'iterativa il contenuto della pila esplicita (la cima è a destra).</p>
+        <div class="viz" id="graph-viz" data-algo="dfs" aria-label="Visualizzazione su un grafo">
+          <div class="viz-toolbar">
+            <button class="btn btn-primary" id="btn-play" type="button">Avvia</button>
+            <button class="btn btn-ghost" id="btn-pause" type="button">Pausa</button>
+            <button class="btn btn-ghost" id="btn-step" type="button">Un passo</button>
+            <button class="btn btn-ghost" id="btn-reset" type="button">Azzera</button>
+            <label>Versione <select id="mode"><option value="rec">Ricorsiva</option><option value="iter">Iterativa (pila esplicita)</option></select></label>
+            <label>Partenza <select id="start-node"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></label>
+            <label>Velocità <input id="speed" type="range" min="10" max="100" value="45"></label>
+          </div>
+          <div class="graph-wrap"><svg class="graph-svg" id="graph-svg" viewBox="0 0 640 350" role="img" aria-label="Grafo con nodi da A a G"></svg></div>
+          <div class="frontier" id="frontier"></div>
+          <p class="viz-status" id="viz-status" role="status"></p>
+          <div class="legend">
+            <span><i class="swatch compare"></i> nodo corrente</span>
+            <span><i class="swatch" style="background:#dceae8;border:1px solid #14756d"></i> in attesa</span>
+            <span><i class="swatch sorted"></i> visitato</span>
+            <span><i class="swatch"></i> arco dell'albero di visita</span>
+          </div>
+        </div>
+
+        <h2>Versione ricorsiva</h2>
+        <p>È la più corta e la più vicina alla definizione. Il «torno indietro» è gratis: quando la chiamata su un vicino finisce, il controllo ritorna al ciclo del nodo precedente.</p>
+        <div class="code-tabs">
+          <div class="tablist" role="tablist">
+            <button type="button" data-lang="js" aria-selected="true">JavaScript</button>
+            <button type="button" data-lang="ts" aria-selected="false">TypeScript</button>
+            <button type="button" data-lang="py" aria-selected="false">Python</button>
+          </div>
+          <pre data-lang="js"><code><span class="kw">function</span> <span class="fn">dfs</span>(grafo, u, visti = <span class="kw">new</span> Set(), ordine = []) {
+  visti.add(u);
+  ordine.push(u);
+  <span class="kw">for</span> (<span class="kw">const</span> v <span class="kw">of</span> grafo[u]) {
+    <span class="kw">if</span> (!visti.has(v)) <span class="fn">dfs</span>(grafo, v, visti, ordine);
+  }
+  <span class="kw">return</span> ordine;
+}</code></pre>
+          <pre data-lang="ts" hidden><code><span class="kw">type</span> Grafo = Record&lt;string, string[]&gt;;
+
+<span class="kw">function</span> <span class="fn">dfs</span>(
+  grafo: Grafo,
+  u: string,
+  visti: Set&lt;string&gt; = <span class="kw">new</span> Set(),
+  ordine: string[] = []
+): string[] {
+  visti.add(u);
+  ordine.push(u);
+  <span class="kw">for</span> (<span class="kw">const</span> v <span class="kw">of</span> grafo[u] ?? []) {
+    <span class="kw">if</span> (!visti.has(v)) <span class="fn">dfs</span>(grafo, v, visti, ordine);
+  }
+  <span class="kw">return</span> ordine;
+}</code></pre>
+          <pre data-lang="py" hidden><code><span class="kw">def</span> <span class="fn">dfs</span>(grafo, u, visti=<span class="kw">None</span>, ordine=<span class="kw">None</span>):
+    <span class="kw">if</span> visti <span class="kw">is None</span>:
+        visti, ordine = set(), []
+    visti.add(u)
+    ordine.append(u)
+    <span class="kw">for</span> v <span class="kw">in</span> grafo[u]:
+        <span class="kw">if</span> v <span class="kw">not in</span> visti:
+            dfs(grafo, v, visti, ordine)
+    <span class="kw">return</span> ordine</code></pre>
+        </div>
+        <div class="callout warn">
+          <p class="callout-title">Il limite della ricorsione</p>
+          <p>La profondità della ricorsione può arrivare a V: su una catena di 100.000 nodi Python solleva <code>RecursionError</code> (il limite predefinito è circa 1.000) e Node.js va in «Maximum call stack size exceeded». Con dati reali e grandi, o non controllati da te, preferisci la versione iterativa.</p>
+        </div>
+
+        <h2>Versione iterativa, con pila esplicita</h2>
+        <p>Sostituisci lo stack delle chiamate con un array usato come pila: <code>push</code> per inserire, <code>pop</code> per estrarre dalla cima, entrambi O(1). Due dettagli la rendono equivalente alla ricorsiva:</p>
+        <ul>
+          <li>segna il nodo come visitato <strong>quando lo estrai</strong>, e ignora quelli già visitati: un nodo può trovarsi in pila più volte, ma lo visiti una sola;</li>
+          <li>inserisci i vicini <strong>in ordine inverso</strong>, così il primo vicino finisce in cima e viene esplorato per primo, come nella ricorsiva.</li>
+        </ul>
+        <div class="code-tabs">
+          <div class="tablist" role="tablist">
+            <button type="button" data-lang="js" aria-selected="true">JavaScript</button>
+            <button type="button" data-lang="ts" aria-selected="false">TypeScript</button>
+            <button type="button" data-lang="py" aria-selected="false">Python</button>
+          </div>
+          <pre data-lang="js"><code><span class="kw">function</span> <span class="fn">dfsIterativa</span>(grafo, partenza) {
+  <span class="kw">const</span> visti = <span class="kw">new</span> Set();
+  <span class="kw">const</span> ordine = [];
+  <span class="kw">const</span> pila = [partenza];
+  <span class="kw">while</span> (pila.length &gt; <span class="nu">0</span>) {
+    <span class="kw">const</span> u = pila.pop();
+    <span class="kw">if</span> (visti.has(u)) <span class="kw">continue</span>;           <span class="cm">// già visitato da un altro ramo</span>
+    visti.add(u);
+    ordine.push(u);
+    <span class="kw">for</span> (<span class="kw">const</span> v <span class="kw">of</span> [...grafo[u]].reverse()) {
+      <span class="kw">if</span> (!visti.has(v)) pila.push(v);
+    }
+  }
+  <span class="kw">return</span> ordine;
+}</code></pre>
+          <pre data-lang="ts" hidden><code><span class="kw">function</span> <span class="fn">dfsIterativa</span>(grafo: Record&lt;string, string[]&gt;, partenza: string): string[] {
+  <span class="kw">const</span> visti = <span class="kw">new</span> Set&lt;string&gt;();
+  <span class="kw">const</span> ordine: string[] = [];
+  <span class="kw">const</span> pila: string[] = [partenza];
+  <span class="kw">while</span> (pila.length &gt; <span class="nu">0</span>) {
+    <span class="kw">const</span> u = pila.pop()!;
+    <span class="kw">if</span> (visti.has(u)) <span class="kw">continue</span>;
+    visti.add(u);
+    ordine.push(u);
+    <span class="kw">const</span> vicini = grafo[u] ?? [];
+    <span class="kw">for</span> (<span class="kw">let</span> i = vicini.length - <span class="nu">1</span>; i &gt;= <span class="nu">0</span>; i--) {
+      <span class="kw">if</span> (!visti.has(vicini[i])) pila.push(vicini[i]);
+    }
+  }
+  <span class="kw">return</span> ordine;
+}</code></pre>
+          <pre data-lang="py" hidden><code><span class="kw">def</span> <span class="fn">dfs_iterativa</span>(grafo, partenza):
+    visti, ordine = set(), []
+    pila = [partenza]
+    <span class="kw">while</span> pila:
+        u = pila.pop()
+        <span class="kw">if</span> u <span class="kw">in</span> visti:                   <span class="cm"># già visitato da un altro ramo</span>
+            <span class="kw">continue</span>
+        visti.add(u)
+        ordine.append(u)
+        <span class="kw">for</span> v <span class="kw">in</span> reversed(grafo[u]):
+            <span class="kw">if</span> v <span class="kw">not in</span> visti:
+                pila.append(v)
+    <span class="kw">return</span> ordine</code></pre>
+        </div>
+
+        <h2>Complessità</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Versione</th><th>Tempo</th><th>Spazio extra</th></tr></thead>
+            <tbody>
+              <tr><td>Ricorsiva</td><td class="mono">O(V + E)</td><td class="mono">O(V) visti + O(V) stack delle chiamate</td></tr>
+              <tr><td>Iterativa con pila</td><td class="mono">O(V + E)</td><td class="mono">O(V) visti + pila fino a O(E) in questa forma</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Ogni nodo viene visitato una volta e ogni lista di adiacenza scorsa una volta: tempo lineare, come la BFS. La versione iterativa qui sopra può mettere in pila lo stesso nodo più volte (una per ogni arco che lo raggiunge prima della visita), quindi la pila può crescere fino a O(E). Esiste una variante con un iteratore per nodo che resta in O(V), più lunga da scrivere; per un ripasso, questa è la forma da ricordare.</p>
+
+        <h2>Esercizi</h2>
+        <div class="exercise">
+          <h3>1. Ordine di visita</h3>
+          <p>Nel grafo dell'animazione, partendo da A con i vicini in ordine alfabetico, in che ordine visita la DFS?</p>
+          <details><summary>Mostra la soluzione</summary><p>A, B, D, E, C, F, G. Da A scende su B, poi su D (vicolo cieco), torna a B e va su E, da E va su C (B è già visto), da C su F, poi torna fino a E e visita G.</p></details>
+        </div>
+        <div class="exercise">
+          <h3>2. Senza reverse</h3>
+          <p>Cosa cambia se nella versione iterativa non inverti i vicini?</p>
+          <details><summary>Mostra la soluzione</summary><p>È ancora una DFS corretta, ma esplora per primo l'ultimo vicino: partendo da A ottieni A, C, F, E, G, B, D. Ordine diverso dalla ricorsiva, stessa complessità.</p></details>
+        </div>
+        <div class="exercise">
+          <h3>3. Trovare un ciclo</h3>
+          <p>In un grafo orientato di dipendenze, come usi la DFS per accorgerti di una dipendenza circolare?</p>
+          <details><summary>Mostra la soluzione</summary><p>Tieni tre stati per nodo: non visitato, «in corso» (sulla pila delle chiamate) e completato. Se durante la visita incontri un arco verso un nodo «in corso», hai trovato un ciclo. L'ordine in cui i nodi diventano «completati», letto al contrario, è un ordinamento topologico quando cicli non ce ne sono.</p></details>
+        </div>
+
+        <nav class="pager">
+          <a href="bfs.html"><span class="dir">Indietro</span>BFS</a>
+          <a href="mappa.html"><span class="dir">Avanti</span>Mappa del sito</a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Algoritmi in chiaro — un ripasso pratico, testi originali in italiano. <a href="fonti.html">Fonti e letture</a></p>
+      <p>Sito statico, senza backend. Pubblicato su GitHub Pages.</p>
+    </div>
+  </footer>
+  <script src="../js/main.js"></script>
+  <script src="../js/viz-common.js"></script>
+  <script src="../js/graph-traverse.js"></script>
+</body>
+</html>
