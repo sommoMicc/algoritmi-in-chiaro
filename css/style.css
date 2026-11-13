@@ -717,3 +717,18 @@ td.mono, .mono, .chip.mono { font-family: var(--font-mono); font-size: 0.9em; fo
   background: var(--paper);
   color: var(--ink);
 }
+
+/* Codice dentro i blocchi scuri: annulla lo stile del codice inline (.prose code) */
+.code-tabs pre code,
+.prose .code-tabs pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  color: var(--code-fg);
+  -webkit-text-fill-color: currentColor;
+  display: block;
+  white-space: pre;
+}
+.code-tabs pre { color-scheme: dark; -webkit-text-size-adjust: 100%; }
